@@ -24,12 +24,10 @@ function App() {
     })
   }
 
-  console.log(stores)
-
   return (
     <div>
-      <Store/>
-      <Item/>
+      <h1>Welcome to the BOTW Online Store</h1>
+      <Store stores={stores}/>
     </div>
   );
 }
