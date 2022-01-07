@@ -3,17 +3,22 @@ import Item from "./Item";
 import './App.css';
 
 function Store({stores, onDeleteItem, onSellItem, onBuyItem, inventory}){
-    console.log(stores)
 
     let storeDisplay = stores.map((store) => {
-        return <div key={store.id}>
+        return <div key={store.name} className="store">
             <h3>{store.name}</h3>
-            <Item store={store} onSellItem={onSellItem} onBuyItem={onBuyItem} inventory={inventory}/>
+            <Item
+                inventory={inventory} 
+                store={store}
+                onSellItem={onSellItem} 
+                onBuyItem={onBuyItem} 
+                onDeleteItem={onDeleteItem}
+            />
         </div>
     })
 
 return (
-    <div>
+    <div id="store-container">
         {storeDisplay}
     </div>
 )

@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import Store from './Store';
-import Item from './Item';
 
 function App() {
   const [stores, setStores] = useState([])
   const [inventory, setInventory] = useState([])
+
+  console.log(stores)
 
   useEffect(() => {
     fetch("http://localhost:9292/stores")
@@ -31,16 +32,59 @@ function App() {
     })
   }
 
-  function handleDeleteItem(id){
-    console.log(id)
+  function handleDeleteItem(deletedStock){
+    fetch(`http://localhost:9292/stocks/${deletedStock[0].id}`, {
+      method: 'DELETE',
+    })
+    .then(res => res.json())
+    .then(stockD => {
+      const copyOfStores = [...stores]
+      const storeToUpdate = copyOfStores.find(store => store.id === stockD.store_id)
+      storeToUpdate.stocks = storeToUpdate.stocks.filter((stock) => stock.id !== stockD.id)
+      setStores(copyOfStores)
+    })
   }
 
-  function handleSellItem(id){
-    console.log(id)
+  function handleSellItem(stock){
+    const newQuantity = stock[0].quantity + 1
+    console.log(newQuantity)
+    fetch(`http://localhost:9292/stocks/${stock[0].id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({quantity: newQuantity})
+    })
+    .then(res => res.json())
+    .then(stockD => {
+      const copyOfStores = [...stores]
+      const storeToUpdate = copyOfStores.find(store => store.id === stockD.store_id)
+      storeToUpdate.stocks = storeToUpdate.stocks.filter((stock) => stock.id !== stockD.id)
+      storeToUpdate.stocks.push(stockD)
+      setStores(copyOfStores)
+    })
+    
+    
   }
 
-  function handleBuyItem(id){
-    console.log(id)
+  function handleBuyItem(stock){
+    const newQuantity = stock[0].quantity - 1
+    console.log(newQuantity)
+    fetch(`http://localhost:9292/stocks/${stock[0].id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({quantity: newQuantity})
+    })
+    .then(res => res.json())
+    .then(stockD => {
+      const copyOfStores = [...stores]
+      const storeToUpdate = copyOfStores.find(store => store.id === stockD.store_id)
+      storeToUpdate.stocks = storeToUpdate.stocks.filter((stock) => stock.id !== stockD.id)
+      storeToUpdate.stocks.push(stockD)
+      setStores(copyOfStores)
+    })
   }
 
 
